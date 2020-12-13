@@ -7,27 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9569B934258284A5005D6986 /* ShotsWorkoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 9569B932258284A5005D6986 /* ShotsWorkoutManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9569B93C258284D2005D6986 /* ShotsSessionDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9569B93B258284D2005D6986 /* ShotsSessionDetails.swift */; };
-		9569B93F258284E9005D6986 /* ShotsWorkoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9569B93E258284E9005D6986 /* ShotsWorkoutManager.swift */; };
-		9569B942258284F8005D6986 /* ShotsMotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9569B941258284F8005D6986 /* ShotsMotionManager.swift */; };
-		9569B945258285C8005D6986 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9569B944258285C8005D6986 /* Constants.swift */; };
-		9569B94825828866005D6986 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9569B94725828866005D6986 /* Log.swift */; };
+		95FDC40225866AD100EA30BD /* ShotsWorkoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 95FDC40025866AD100EA30BD /* ShotsWorkoutManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		95FDC40E25866AE700EA30BD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FDC40925866AE700EA30BD /* Constants.swift */; };
+		95FDC40F25866AE700EA30BD /* ShotsSessionDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FDC40A25866AE700EA30BD /* ShotsSessionDetails.swift */; };
+		95FDC41025866AE700EA30BD /* ShotsMotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FDC40B25866AE700EA30BD /* ShotsMotionManager.swift */; };
+		95FDC41125866AE700EA30BD /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FDC40C25866AE700EA30BD /* Log.swift */; };
+		95FDC41225866AE700EA30BD /* ShotsWorkoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FDC40D25866AE700EA30BD /* ShotsWorkoutManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		9569B92F258284A5005D6986 /* ShotsWorkoutManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShotsWorkoutManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9569B932258284A5005D6986 /* ShotsWorkoutManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShotsWorkoutManager.h; sourceTree = "<group>"; };
-		9569B933258284A5005D6986 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9569B93B258284D2005D6986 /* ShotsSessionDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShotsSessionDetails.swift; sourceTree = "<group>"; };
-		9569B93E258284E9005D6986 /* ShotsWorkoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShotsWorkoutManager.swift; sourceTree = "<group>"; };
-		9569B941258284F8005D6986 /* ShotsMotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShotsMotionManager.swift; sourceTree = "<group>"; };
-		9569B944258285C8005D6986 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		9569B94725828866005D6986 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		95FDC3FD25866AD100EA30BD /* ShotsWorkoutManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShotsWorkoutManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		95FDC40025866AD100EA30BD /* ShotsWorkoutManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShotsWorkoutManager.h; sourceTree = "<group>"; };
+		95FDC40125866AD100EA30BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		95FDC40925866AE700EA30BD /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		95FDC40A25866AE700EA30BD /* ShotsSessionDetails.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShotsSessionDetails.swift; sourceTree = "<group>"; };
+		95FDC40B25866AE700EA30BD /* ShotsMotionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShotsMotionManager.swift; sourceTree = "<group>"; };
+		95FDC40C25866AE700EA30BD /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		95FDC40D25866AE700EA30BD /* ShotsWorkoutManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShotsWorkoutManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		9569B92C258284A5005D6986 /* Frameworks */ = {
+		95FDC3FA25866AD100EA30BD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -37,32 +37,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		9569B925258284A5005D6986 = {
+		95FDC3F325866AD100EA30BD = {
 			isa = PBXGroup;
 			children = (
-				9569B931258284A5005D6986 /* ShotsWorkoutManager */,
-				9569B930258284A5005D6986 /* Products */,
+				95FDC3FF25866AD100EA30BD /* ShotsWorkoutManager */,
+				95FDC3FE25866AD100EA30BD /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		9569B930258284A5005D6986 /* Products */ = {
+		95FDC3FE25866AD100EA30BD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9569B92F258284A5005D6986 /* ShotsWorkoutManager.framework */,
+				95FDC3FD25866AD100EA30BD /* ShotsWorkoutManager.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		9569B931258284A5005D6986 /* ShotsWorkoutManager */ = {
+		95FDC3FF25866AD100EA30BD /* ShotsWorkoutManager */ = {
 			isa = PBXGroup;
 			children = (
-				9569B932258284A5005D6986 /* ShotsWorkoutManager.h */,
-				9569B933258284A5005D6986 /* Info.plist */,
-				9569B93B258284D2005D6986 /* ShotsSessionDetails.swift */,
-				9569B93E258284E9005D6986 /* ShotsWorkoutManager.swift */,
-				9569B941258284F8005D6986 /* ShotsMotionManager.swift */,
-				9569B944258285C8005D6986 /* Constants.swift */,
-				9569B94725828866005D6986 /* Log.swift */,
+				95FDC40925866AE700EA30BD /* Constants.swift */,
+				95FDC40C25866AE700EA30BD /* Log.swift */,
+				95FDC40B25866AE700EA30BD /* ShotsMotionManager.swift */,
+				95FDC40A25866AE700EA30BD /* ShotsSessionDetails.swift */,
+				95FDC40D25866AE700EA30BD /* ShotsWorkoutManager.swift */,
+				95FDC40025866AD100EA30BD /* ShotsWorkoutManager.h */,
+				95FDC40125866AD100EA30BD /* Info.plist */,
 			);
 			path = ShotsWorkoutManager;
 			sourceTree = "<group>";
@@ -70,25 +70,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		9569B92A258284A5005D6986 /* Headers */ = {
+		95FDC3F825866AD100EA30BD /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9569B934258284A5005D6986 /* ShotsWorkoutManager.h in Headers */,
+				95FDC40225866AD100EA30BD /* ShotsWorkoutManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		9569B92E258284A5005D6986 /* ShotsWorkoutManager */ = {
+		95FDC3FC25866AD100EA30BD /* ShotsWorkoutManager */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9569B937258284A5005D6986 /* Build configuration list for PBXNativeTarget "ShotsWorkoutManager" */;
+			buildConfigurationList = 95FDC40525866AD100EA30BD /* Build configuration list for PBXNativeTarget "ShotsWorkoutManager" */;
 			buildPhases = (
-				9569B92A258284A5005D6986 /* Headers */,
-				9569B92B258284A5005D6986 /* Sources */,
-				9569B92C258284A5005D6986 /* Frameworks */,
-				9569B92D258284A5005D6986 /* Resources */,
+				95FDC3F825866AD100EA30BD /* Headers */,
+				95FDC3F925866AD100EA30BD /* Sources */,
+				95FDC3FA25866AD100EA30BD /* Frameworks */,
+				95FDC3FB25866AD100EA30BD /* Resources */,
 			);
 			buildRules = (
 			);
@@ -96,24 +96,24 @@
 			);
 			name = ShotsWorkoutManager;
 			productName = ShotsWorkoutManager;
-			productReference = 9569B92F258284A5005D6986 /* ShotsWorkoutManager.framework */;
+			productReference = 95FDC3FD25866AD100EA30BD /* ShotsWorkoutManager.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		9569B926258284A5005D6986 /* Project object */ = {
+		95FDC3F425866AD100EA30BD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1220;
 				TargetAttributes = {
-					9569B92E258284A5005D6986 = {
+					95FDC3FC25866AD100EA30BD = {
 						CreatedOnToolsVersion = 12.2;
 						LastSwiftMigration = 1220;
 					};
 				};
 			};
-			buildConfigurationList = 9569B929258284A5005D6986 /* Build configuration list for PBXProject "ShotsWorkoutManager" */;
+			buildConfigurationList = 95FDC3F725866AD100EA30BD /* Build configuration list for PBXProject "ShotsWorkoutManager" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -121,18 +121,18 @@
 				en,
 				Base,
 			);
-			mainGroup = 9569B925258284A5005D6986;
-			productRefGroup = 9569B930258284A5005D6986 /* Products */;
+			mainGroup = 95FDC3F325866AD100EA30BD;
+			productRefGroup = 95FDC3FE25866AD100EA30BD /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9569B92E258284A5005D6986 /* ShotsWorkoutManager */,
+				95FDC3FC25866AD100EA30BD /* ShotsWorkoutManager */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		9569B92D258284A5005D6986 /* Resources */ = {
+		95FDC3FB25866AD100EA30BD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -142,22 +142,22 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		9569B92B258284A5005D6986 /* Sources */ = {
+		95FDC3F925866AD100EA30BD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9569B942258284F8005D6986 /* ShotsMotionManager.swift in Sources */,
-				9569B93C258284D2005D6986 /* ShotsSessionDetails.swift in Sources */,
-				9569B94825828866005D6986 /* Log.swift in Sources */,
-				9569B93F258284E9005D6986 /* ShotsWorkoutManager.swift in Sources */,
-				9569B945258285C8005D6986 /* Constants.swift in Sources */,
+				95FDC41025866AE700EA30BD /* ShotsMotionManager.swift in Sources */,
+				95FDC41225866AE700EA30BD /* ShotsWorkoutManager.swift in Sources */,
+				95FDC40E25866AE700EA30BD /* Constants.swift in Sources */,
+				95FDC41125866AE700EA30BD /* Log.swift in Sources */,
+				95FDC40F25866AE700EA30BD /* ShotsSessionDetails.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		9569B935258284A5005D6986 /* Debug */ = {
+		95FDC40325866AD100EA30BD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -221,7 +221,7 @@
 			};
 			name = Debug;
 		};
-		9569B936258284A5005D6986 /* Release */ = {
+		95FDC40425866AD100EA30BD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -279,7 +279,7 @@
 			};
 			name = Release;
 		};
-		9569B938258284A5005D6986 /* Debug */ = {
+		95FDC40625866AD100EA30BD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -297,7 +297,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.juanirl.ShotsWorkoutManager;
+				PRODUCT_BUNDLE_IDENTIFIER = com.liebanajr.ShotsWorkoutManager;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -306,7 +306,7 @@
 			};
 			name = Debug;
 		};
-		9569B939258284A5005D6986 /* Release */ = {
+		95FDC40725866AD100EA30BD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -324,7 +324,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.juanirl.ShotsWorkoutManager;
+				PRODUCT_BUNDLE_IDENTIFIER = com.liebanajr.ShotsWorkoutManager;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -335,25 +335,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9569B929258284A5005D6986 /* Build configuration list for PBXProject "ShotsWorkoutManager" */ = {
+		95FDC3F725866AD100EA30BD /* Build configuration list for PBXProject "ShotsWorkoutManager" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9569B935258284A5005D6986 /* Debug */,
-				9569B936258284A5005D6986 /* Release */,
+				95FDC40325866AD100EA30BD /* Debug */,
+				95FDC40425866AD100EA30BD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9569B937258284A5005D6986 /* Build configuration list for PBXNativeTarget "ShotsWorkoutManager" */ = {
+		95FDC40525866AD100EA30BD /* Build configuration list for PBXNativeTarget "ShotsWorkoutManager" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9569B938258284A5005D6986 /* Debug */,
-				9569B939258284A5005D6986 /* Release */,
+				95FDC40625866AD100EA30BD /* Debug */,
+				95FDC40725866AD100EA30BD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 9569B926258284A5005D6986 /* Project object */;
+	rootObject = 95FDC3F425866AD100EA30BD /* Project object */;
 }

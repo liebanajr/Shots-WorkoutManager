@@ -2,7 +2,7 @@
 //  ShotsWorkoutManager.h
 //  ShotsWorkoutManager
 //
-//  Created by Juan Rodríguez on 10/12/20.
+//  Created by Juan Rodríguez on 13/12/20.
 //
 
 #import <Foundation/Foundation.h>
