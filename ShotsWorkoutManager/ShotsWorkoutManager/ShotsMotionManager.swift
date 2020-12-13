@@ -50,7 +50,7 @@ protocol ShotsMotionManagerDelegate {
     func motionManager(didAppend dataPoint: MotionDataPoint)
 }
 
-class ShotsMotionManager: NSObject {
+public class ShotsMotionManager: NSObject {
     
     var motionDataPoints : Array<MotionDataPoint>
     var motion : CMMotionManager?
@@ -58,8 +58,8 @@ class ShotsMotionManager: NSObject {
     
     var delegate : ShotsMotionManagerDelegate?
         
-    var isCrownInverted = false
-    var isWatchHandInverted = false
+    public var isCrownInverted = false
+    public var isWatchHandInverted = false
     private var inverter = 1.0
     
     var sampleInterval = 1.0/30.0
@@ -74,7 +74,7 @@ class ShotsMotionManager: NSObject {
     
 //    MARK: Managing data
     
-    func toCSVString() -> String{
+    public func toCSVString() -> String{
         
         var resultString = K.csvTextHeader
         
@@ -143,7 +143,7 @@ class ShotsMotionManager: NSObject {
 //    MARK: Managing device motion
 
     
-    func startMotionUpdates(){
+    public func startMotionUpdates(){
         
         motion = CMMotionManager()
         motion!.deviceMotionUpdateInterval = sampleInterval
@@ -175,19 +175,19 @@ class ShotsMotionManager: NSObject {
         
     }
     
-    func pauseMotionUpdates(){
+    public func pauseMotionUpdates(){
         Log.trace("Pausing motion updates")
         motion?.stopDeviceMotionUpdates()
     }
     
-    func resumeMotionUpdates(){
+    public func resumeMotionUpdates(){
         Log.trace("Resuming motion updates")
         motion?.startDeviceMotionUpdates(to: .main) { (deviceMotion, error) in
             self.performDatapointActions(deviceMotion, error)
         }
     }
     
-    func stopMotionUpdates() {
+    public func stopMotionUpdates() {
         
         Log.trace("Stopping motion updates...")
         motion?.stopDeviceMotionUpdates()

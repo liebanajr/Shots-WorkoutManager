@@ -8,24 +8,24 @@
 
 import Foundation
 
-class ShotsSessionDetails : NSObject{
+public class ShotsSessionDetails : NSObject{
     
-    var cumulativeCaloriesBurned : Int
-    var cumulativeDistance : Int
-    var averageHeartRate : Int
-    var maxHeartRate : Int
-    var maxHRAtEnd : Int
-    var minHRAtEnd : Int
-    var minHeartRate : Int
-    var currentHeartRate : Int
-    var endCounter : Int
-    var elapsedSeconds : Int
-    var arrowCounter : Int
-    var endDate : Date?
-    var startDate : Date
-    var sessionType : String?
+    public var cumulativeCaloriesBurned : Int
+    public var cumulativeDistance : Int
+    public var averageHeartRate : Int
+    public var maxHeartRate : Int
+    public var maxHRAtEnd : Int
+    public var minHRAtEnd : Int
+    public var minHeartRate : Int
+    public var currentHeartRate : Int
+    public var endCounter : Int
+    public var elapsedSeconds : Int
+    public var arrowCounter : Int
+    public var endDate : Date?
+    public var startDate : Date
+    public var sessionType : String?
     
-    let sessionId : String
+    public let sessionId : String
     
     init(sessionId id: String) {
         self.cumulativeCaloriesBurned = 0

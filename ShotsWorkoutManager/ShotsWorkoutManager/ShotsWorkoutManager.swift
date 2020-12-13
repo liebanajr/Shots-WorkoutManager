@@ -10,13 +10,13 @@ import WatchKit
 import HealthKit
 import WatchConnectivity
 
-enum ShotsSessionType : String{
+public enum ShotsSessionType : String{
     case FREE = "free"
     case GOAL = "goal"
     case MANUAL = "manual"
 }
 
-protocol ShotsWorkoutDelegate {
+public protocol ShotsWorkoutDelegate {
     func workoutManager(didStartWorkout withData: ShotsSessionDetails)
     func workoutManager(didPauseWorkout withData: ShotsSessionDetails)
     func workoutManager(didResumeWorkout withData: ShotsSessionDetails)
@@ -25,44 +25,37 @@ protocol ShotsWorkoutDelegate {
     func workoutManager(didLockScreen withData: ShotsSessionDetails?)
 }
 
-class ShotsWorkoutManager: NSObject {
+public class ShotsWorkoutManager: NSObject {
     
 //    MARK: Singleton. Only one workout is allowed to run at a time
     
-    static let shared = ShotsWorkoutManager()
+    public static let shared = ShotsWorkoutManager()
     
 //    MARK: Delegate
     
-    var delegate: ShotsWorkoutDelegate?
+    public var delegate: ShotsWorkoutDelegate?
     
 //    MARK: HealthKit objects
     var workoutSession : HKWorkoutSession?
     var builder : HKLiveWorkoutBuilder?
-    var healthStore : HKHealthStore
-    var workoutConfiguration : HKWorkoutConfiguration
+    var healthStore : HKHealthStore?
     
 //    MARK: Dependencies
-    var motionManager: ShotsMotionManager?
-    var sessionData : ShotsSessionDetails?
+    public var motionManager: ShotsMotionManager?
     let wcSession = WCSession.default
+    public var sessionData : ShotsSessionDetails?
     
 //    MARK: State management
-    var isWorkoutRunning : Bool?
-    var isSaveWorkoutActive = true
-        
-    init(isSaveWorkoutActive saveWorkout : Bool = true) {
-        healthStore = HKHealthStore()
-        workoutConfiguration = HKWorkoutConfiguration()
-        workoutConfiguration.activityType = .archery
-        workoutConfiguration.locationType = .outdoor
-        isSaveWorkoutActive = saveWorkout
+    public var isWorkoutRunning : Bool?
+    public var isSaveWorkoutActive = true
+    
+    public override init() {
         super.init()
-        
     }
     
 //   MARK: Workout lifecycle
     
-    func startWorkout(id sessionId : String, type sessionType: ShotsSessionType?){
+    public func startWorkout(id sessionId : String, type sessionType: ShotsSessionType?){
         
         switch sessionType {
             case .FREE:
@@ -84,9 +77,13 @@ class ShotsWorkoutManager: NSObject {
 //        WE don't create workout and helathkit objects if no workout save is needed (development)
         if isSaveWorkoutActive {
             do {
-                workoutSession = try HKWorkoutSession(healthStore: healthStore, configuration: workoutConfiguration)
+                healthStore = HKHealthStore()
+                let workoutConfiguration = HKWorkoutConfiguration()
+                workoutConfiguration.activityType = .archery
+                workoutConfiguration.locationType = .outdoor
+                workoutSession = try HKWorkoutSession(healthStore: healthStore!, configuration: workoutConfiguration)
                 builder = workoutSession!.associatedWorkoutBuilder()
-                builder!.dataSource = HKLiveWorkoutDataSource(healthStore: healthStore, workoutConfiguration: workoutConfiguration)
+                builder!.dataSource = HKLiveWorkoutDataSource(healthStore: healthStore!, workoutConfiguration: workoutConfiguration)
 
                 workoutSession!.delegate = self
                 builder!.delegate = self
@@ -111,7 +108,7 @@ class ShotsWorkoutManager: NSObject {
         delegate?.workoutManager(didStartWorkout: sessionData!)
     }
     
-    func pauseWorkout(){
+    public func pauseWorkout(){
         if let isRunning = isWorkoutRunning{
             if !isRunning {
                 Log.warning("Can't pause workout if it's not running")
@@ -134,7 +131,7 @@ class ShotsWorkoutManager: NSObject {
         }
     }
     
-    func resumeWorkout(){
+    public func resumeWorkout(){
         if let isRunning = isWorkoutRunning{
             if isRunning {
                 Log.warning("Can't resume workout if it's already running")
@@ -150,7 +147,7 @@ class ShotsWorkoutManager: NSObject {
         }
     }
     
-    func stopWorkout(){
+    public func stopWorkout(){
         
         if let isRunning = isWorkoutRunning, isRunning {
             Log.trace("Trying to end workout")
@@ -189,12 +186,12 @@ class ShotsWorkoutManager: NSObject {
     
 //    MARK: Session Data management
     
-    func addArrow(){
+    public func addArrow(){
         sessionData?.arrowCounter += 1
         delegate?.workoutManager(didUpdateSession: sessionData!)
     }
     
-    func removeArrow(){
+    public func removeArrow(){
         if sessionData!.arrowCounter <= Int16(1) {
             sessionData?.arrowCounter = 0
         } else {
@@ -205,7 +202,7 @@ class ShotsWorkoutManager: NSObject {
     
 //    MARK: Other functions
     
-    func lockScreen(){
+    public func lockScreen(){
         if workoutSession?.state == .running{
             WKInterfaceDevice.current().enableWaterLock()
             delegate!.workoutManager(didLockScreen: sessionData)
@@ -219,7 +216,7 @@ class ShotsWorkoutManager: NSObject {
 
 extension ShotsWorkoutManager: HKLiveWorkoutBuilderDelegate {
     
-    func workoutBuilder(_ workoutBuilder: HKLiveWorkoutBuilder, didCollectDataOf collectedTypes: Set<HKSampleType>) {
+    public func workoutBuilder(_ workoutBuilder: HKLiveWorkoutBuilder, didCollectDataOf collectedTypes: Set<HKSampleType>) {
         for type in collectedTypes {
             guard let quantityType = type as? HKQuantityType else {
                 return // Nothing to do.
@@ -265,7 +262,7 @@ extension ShotsWorkoutManager: HKLiveWorkoutBuilderDelegate {
             
     }
     
-    func workoutBuilderDidCollectEvent(_ workoutBuilder: HKLiveWorkoutBuilder) {
+    public func workoutBuilderDidCollectEvent(_ workoutBuilder: HKLiveWorkoutBuilder) {
         Log.trace("Workout builder collected event: \(workoutBuilder.dataSource!)")
     }
     
@@ -275,7 +272,7 @@ extension ShotsWorkoutManager: HKLiveWorkoutBuilderDelegate {
 
 extension ShotsWorkoutManager: HKWorkoutSessionDelegate {
     
-    func workoutSession(_ workoutSession: HKWorkoutSession, didChangeTo toState: HKWorkoutSessionState, from fromState: HKWorkoutSessionState, date: Date) {
+    public func workoutSession(_ workoutSession: HKWorkoutSession, didChangeTo toState: HKWorkoutSessionState, from fromState: HKWorkoutSessionState, date: Date) {
         let startState = getWorkoutSessionStateName(state: fromState)
         let endState = getWorkoutSessionStateName(state: toState)
         Log.trace("Workout session changed from \(startState) to \(endState)")
@@ -300,11 +297,11 @@ extension ShotsWorkoutManager: HKWorkoutSessionDelegate {
         }
     }
     
-    func workoutSession(_ workoutSession: HKWorkoutSession, didFailWithError error: Error) {
+    public func workoutSession(_ workoutSession: HKWorkoutSession, didFailWithError error: Error) {
         Log.error("Workout session failed with error: \(error)")
     }
     
-    func workoutSession(_ workoutSession: HKWorkoutSession, didGenerate event: HKWorkoutEvent) {
+    public func workoutSession(_ workoutSession: HKWorkoutSession, didGenerate event: HKWorkoutEvent) {
         if event.type == .pauseOrResumeRequest {
             Log.info("Received pause or resume request")
             if let runningState = isWorkoutRunning {
