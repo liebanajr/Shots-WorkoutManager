@@ -48,28 +48,28 @@ public class ShotsWorkoutManager: NSObject {
 //    MARK: State management
     public var isWorkoutRunning : Bool?
     public var isSaveWorkoutActive = true
+    private var lastStartDate : Date?
     
     public override init() {
+        motionManager = ShotsMotionManager(sampleFrequency: K.sampleFrequency)
         super.init()
     }
     
 //   MARK: Workout lifecycle
     
-    public func startWorkout(id sessionId : String, type sessionType: ShotsSessionType?){
+    public func startWorkout(id sessionId : String, type sessionType: ShotsSessionType){
         
         switch sessionType {
             case .FREE:
-                    Log.trace("Starting free workout session")
-                    //      Listen for prediction event
+                Log.trace("Starting free workout session")
                 motionManager = ShotsMotionManager(sampleFrequency: K.sampleFrequency)
-                    motionManager?.startMotionUpdates()
+                motionManager?.startMotionUpdates()
             case .GOAL:
-                    Log.trace("Starting goal workout session")
-                    //      Listen for prediction event
+                Log.trace("Starting goal workout session")
                 motionManager = ShotsMotionManager(sampleFrequency: K.sampleFrequency)
-                    motionManager?.startMotionUpdates()
+                motionManager?.startMotionUpdates()
             case .MANUAL:
-                        Log.trace("Starting manual workout session")
+                Log.trace("Starting manual workout session")
             default:
                 Log.warning("Session type not recognized")
         }
@@ -95,7 +95,8 @@ public class ShotsWorkoutManager: NSObject {
         }
         
         sessionData = ShotsSessionDetails(sessionId: sessionId)
-        sessionData?.sessionType = sessionType?.rawValue ?? "no_type"
+        sessionData?.sessionType = sessionType.rawValue
+        lastStartDate = Date()
         
         workoutSession?.startActivity(with: Date())
         builder?.beginCollection(withStart: Date()) { (success, error) in
@@ -121,7 +122,12 @@ public class ShotsWorkoutManager: NSObject {
             }
             workoutSession?.pause()
             motionManager?.pauseMotionUpdates()
-            sessionData?.elapsedSeconds = Int(motionManager!.timeStamp)
+            var timeIncrement = 0
+            if lastStartDate != nil {
+                timeIncrement = Int(Date().timeIntervalSince(lastStartDate!))
+            }
+            lastStartDate = nil
+            sessionData?.elapsedSeconds = sessionData!.elapsedSeconds + timeIncrement
             isWorkoutRunning = false
             WKInterfaceDevice.current().play(.stop)
             delegate!.workoutManager(didPauseWorkout: sessionData!)
@@ -139,6 +145,7 @@ public class ShotsWorkoutManager: NSObject {
             }
             workoutSession?.resume()
             motionManager?.resumeMotionUpdates()
+            lastStartDate = Date()
             isWorkoutRunning = true
             WKInterfaceDevice.current().play(.start)
             delegate!.workoutManager(didResumeWorkout: sessionData!)
@@ -149,7 +156,7 @@ public class ShotsWorkoutManager: NSObject {
     
     public func stopWorkout(){
         
-        if let isRunning = isWorkoutRunning, isRunning {
+        if isWorkoutRunning != nil{
             Log.trace("Trying to end workout")
             workoutSession?.end()
             sessionData?.endDate = Date()
@@ -166,20 +173,20 @@ public class ShotsWorkoutManager: NSObject {
             }
                 
             Log.trace("Trying to end workout")
-            if sessionData?.sessionType == ShotsSessionType.MANUAL.rawValue{
-                let startDate = sessionData?.startDate
-                let endDate = sessionData?.endDate
-                let interval = endDate?.timeIntervalSince(startDate!)
-                sessionData?.elapsedSeconds = Int(interval!)
-            } else {
+            if sessionData?.sessionType != ShotsSessionType.MANUAL.rawValue{
                 motionManager?.stopMotionUpdates()
-                sessionData?.elapsedSeconds = Int(motionManager!.timeStamp)
             }
+            var timeIncrement = 0
+            if lastStartDate != nil {
+                timeIncrement = Int(Date().timeIntervalSince(lastStartDate!))
+            }
+            lastStartDate = nil
+            sessionData?.elapsedSeconds = sessionData!.elapsedSeconds + timeIncrement
             isWorkoutRunning = nil
             WKInterfaceDevice.current().play(.stop)
             delegate?.workoutManager(didStopWorkout: sessionData!)
         } else {
-            Log.warning("Can't stop workout if it's not running")
+            Log.warning("Can't stop workout if it's not started")
         }
             
     }

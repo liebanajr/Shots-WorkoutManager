@@ -24,7 +24,11 @@ struct MotionDataPoint {
     var transformedAccX : Double
     var transformedAccY : Double
     var transformedAccZ : Double
+    var transformedGyrX : Double
+    var transformedGyrY : Double
+    var transformedGyrZ : Double
     var timeStamp : Double
+    var universalTimeStamp : UInt64
     
     init(){
         
@@ -40,7 +44,11 @@ struct MotionDataPoint {
         transformedAccX = 0.0
         transformedAccY = 0.0
         transformedAccZ = 0.0
+        transformedGyrX = 0.0
+        transformedGyrY = 0.0
+        transformedGyrZ = 0.0
         timeStamp = 0.0
+        universalTimeStamp = 0
         
     }
     
@@ -74,6 +82,12 @@ public class ShotsMotionManager: NSObject {
     
 //    MARK: Managing data
     
+    public func emptyMotionDataPoints() {
+        Log.info("Removing all motion data and resetting timeStamp")
+        timeStamp = 0.0
+        motionDataPoints.removeAll(keepingCapacity: false)
+    }
+    
     public func toCSVString() -> String{
         
         var resultString = K.csvTextHeader
@@ -90,9 +104,13 @@ public class ShotsMotionManager: NSObject {
             resultString.append(String(format: K.sensorPrecision, dataPoint.transformedAccX * K.sensorScaleFactor) + K.csvSeparator)
             resultString.append(String(format: K.sensorPrecision, dataPoint.transformedAccY * K.sensorScaleFactor) + K.csvSeparator)
             resultString.append(String(format: K.sensorPrecision, dataPoint.transformedAccZ * K.sensorScaleFactor) + K.csvSeparator)
+            resultString.append(String(format: K.sensorPrecision, dataPoint.transformedGyrX * K.sensorScaleFactor) + K.csvSeparator)
+            resultString.append(String(format: K.sensorPrecision, dataPoint.transformedGyrY * K.sensorScaleFactor) + K.csvSeparator)
+            resultString.append(String(format: K.sensorPrecision, dataPoint.transformedGyrZ * K.sensorScaleFactor) + K.csvSeparator)
             resultString.append(String(format: K.sensorPrecision, dataPoint.gravX * K.sensorScaleFactor) + K.csvSeparator)
             resultString.append(String(format: K.sensorPrecision, dataPoint.gravY * K.sensorScaleFactor) + K.csvSeparator)
-            resultString.append(String(format: K.sensorPrecision, dataPoint.gravZ * K.sensorScaleFactor) + "\n")
+            resultString.append(String(format: K.sensorPrecision, dataPoint.gravZ * K.sensorScaleFactor) + K.csvSeparator)
+            resultString.append("\(dataPoint.universalTimeStamp)\n")
             
         }
         
@@ -113,15 +131,23 @@ public class ShotsMotionManager: NSObject {
         motionDataPoint.gravY = deviceMotion.gravity.y * inverter
         motionDataPoint.gravZ = deviceMotion.gravity.z
         
+        
         let accVector = [motionDataPoint.accX,motionDataPoint.accY,motionDataPoint.accZ]
+        let gyrVector = [motionDataPoint.gyrX,motionDataPoint.gyrY,motionDataPoint.gyrZ]
         let gravityVector = [motionDataPoint.gravX,motionDataPoint.gravY,motionDataPoint.gravZ]
-        let transformedAccVector = ShotsMotionManager.transformAccReferenceFrameWithGravity(acceleration: accVector, gravity: gravityVector)
+        let transformedAccVector = ShotsMotionManager.transformVectorReferenceFrameWithGravity(vector: accVector, gravity: gravityVector)
+        let transformedGyrVector = ShotsMotionManager.transformVectorReferenceFrameWithGravity(vector: gyrVector, gravity: gravityVector)
         
         motionDataPoint.transformedAccX = transformedAccVector[0]
         motionDataPoint.transformedAccY = transformedAccVector[1]
         motionDataPoint.transformedAccZ = transformedAccVector[2]
+        motionDataPoint.transformedGyrX = transformedGyrVector[0]
+        motionDataPoint.transformedGyrY = transformedGyrVector[1]
+        motionDataPoint.transformedGyrZ = transformedGyrVector[2]
         
         motionDataPoint.timeStamp = timeStamp
+        let universalTimeStamp = UInt64(Date().timeIntervalSince1970 * 1000)
+        motionDataPoint.universalTimeStamp = universalTimeStamp
         
         motionDataPoints.append(motionDataPoint)
         return motionDataPoint
@@ -143,7 +169,7 @@ public class ShotsMotionManager: NSObject {
 //    MARK: Managing device motion
 
     
-    public func startMotionUpdates(){
+    func startMotionUpdates(){
         
         motion = CMMotionManager()
         motion!.deviceMotionUpdateInterval = sampleInterval
@@ -175,19 +201,19 @@ public class ShotsMotionManager: NSObject {
         
     }
     
-    public func pauseMotionUpdates(){
+    func pauseMotionUpdates(){
         Log.trace("Pausing motion updates")
         motion?.stopDeviceMotionUpdates()
     }
     
-    public func resumeMotionUpdates(){
+    func resumeMotionUpdates(){
         Log.trace("Resuming motion updates")
         motion?.startDeviceMotionUpdates(to: .main) { (deviceMotion, error) in
             self.performDatapointActions(deviceMotion, error)
         }
     }
     
-    public func stopMotionUpdates() {
+    func stopMotionUpdates() {
         
         Log.trace("Stopping motion updates...")
         motion?.stopDeviceMotionUpdates()
@@ -205,7 +231,7 @@ public class ShotsMotionManager: NSObject {
         return angle
     }
 
-    static func transformAccReferenceFrameWithGravity(acceleration vector: [Double], gravity g: [Double]) -> [Double]{
+    static func transformVectorReferenceFrameWithGravity(vector: [Double], gravity g: [Double]) -> [Double]{
         guard vector.count == 3 && g.count == 3 else {Log.error("Vectors are not 3D");return vector}
         let v = simd_double3(vector[0], vector[1], vector[2])
         let used_g = -simd_normalize(simd_double3(g[0], g[1], g[2]))
