@@ -70,8 +70,7 @@ public class ShotsWorkoutManager: NSObject {
                 motionManager?.startMotionUpdates()
             case .MANUAL:
                 Log.trace("Starting manual workout session")
-            default:
-                Log.warning("Session type not recognized")
+
         }
         
 //        WE don't create workout and helathkit objects if no workout save is needed (development)
