@@ -95,10 +95,8 @@ public class ShotsWorkoutManager: NSObject, ObservableObject {
             Log.warning("No healthkit objects are being created")
         }
         
-        if sessionData.sessionId != "" {
-            sessionData = ShotsSessionDetails(sessionId: sessionId)
-            sessionData.sessionType = sessionType.rawValue
-        }
+        sessionData = ShotsSessionDetails(sessionId: sessionId)
+        sessionData.sessionType = sessionType.rawValue
         lastStartDate = Date()
         
         workoutSession?.startActivity(with: Date())
