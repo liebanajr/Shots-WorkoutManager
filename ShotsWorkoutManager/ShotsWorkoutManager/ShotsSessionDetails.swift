@@ -13,18 +13,18 @@ public class ShotsSessionDetails : ObservableObject {
     
     @Published public var cumulativeCaloriesBurned : Int
     @Published public var cumulativeDistance : Int
-    @Published public var averageHeartRate : Int
-    @Published public var maxHeartRate : Int
-    @Published public var maxHRAtEnd : Int
-    @Published public var minHRAtEnd : Int
-    @Published public var minHeartRate : Int
     @Published public var currentHeartRate : Int
     @Published public var endCounter : Int
-    @Published public var elapsedSeconds : Int
     @Published public var arrowCounter : Int
-    @Published public var endDate : Date?
-    @Published public var startDate : Date
-    @Published public var sessionType : String?
+    public var averageHeartRate : Int
+    public var maxHeartRate : Int
+    public var maxHRAtEnd : Int
+    public var minHRAtEnd : Int
+    public var minHeartRate : Int
+    public var elapsedSeconds : Int
+    public var endDate : Date?
+    public var startDate : Date
+    public var sessionType : String?
     
     public let sessionId : String
     

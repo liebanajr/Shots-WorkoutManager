@@ -49,14 +49,12 @@ public class ShotsWorkoutManager: NSObject, ObservableObject {
     public var motionManager: ShotsMotionManager = ShotsMotionManager(sampleFrequency: K.sampleFrequency)
     public let wcSession = WCSession.default
     @Published
-    public var sessionData : ShotsSessionDetails?
+    public var sessionData : ShotsSessionDetails = ShotsSessionDetails(sessionId: "")
     
 //    MARK: State management
     @Published
     public var state: WorkoutState = .workoutRunning
-    @Published
     public var isSaveWorkoutActive = true
-    @Published
     private var lastStartDate : Date?
     
 //   MARK: Workout lifecycle
@@ -97,8 +95,10 @@ public class ShotsWorkoutManager: NSObject, ObservableObject {
             Log.warning("No healthkit objects are being created")
         }
         
-        sessionData = ShotsSessionDetails(sessionId: sessionId)
-        sessionData?.sessionType = sessionType.rawValue
+        if sessionData.sessionId != "" {
+            sessionData = ShotsSessionDetails(sessionId: sessionId)
+            sessionData.sessionType = sessionType.rawValue
+        }
         lastStartDate = Date()
         
         workoutSession?.startActivity(with: Date())
@@ -110,7 +110,7 @@ public class ShotsWorkoutManager: NSObject, ObservableObject {
         
         state = .workoutRunning
         WKInterfaceDevice.current().play(.start)
-        delegate?.workoutManager(didStartWorkout: sessionData!)
+        delegate?.workoutManager(didStartWorkout: sessionData)
     }
     
     public func pauseWorkout(){
@@ -119,7 +119,7 @@ public class ShotsWorkoutManager: NSObject, ObservableObject {
             return
         }
         
-        if sessionData?.sessionType == ShotsSessionType.MANUAL.rawValue {
+        if sessionData.sessionType == ShotsSessionType.MANUAL.rawValue {
             Log.error("Can't pause on a manual workout")
             return
         }
@@ -130,10 +130,10 @@ public class ShotsWorkoutManager: NSObject, ObservableObject {
             timeIncrement = Int(Date().timeIntervalSince(lastStartDate!))
         }
         lastStartDate = nil
-        sessionData?.elapsedSeconds = sessionData!.elapsedSeconds + timeIncrement
+        sessionData.elapsedSeconds = sessionData.elapsedSeconds + timeIncrement
         state = .workoutPaused
         WKInterfaceDevice.current().play(.stop)
-        delegate!.workoutManager(didPauseWorkout: sessionData!)
+        delegate!.workoutManager(didPauseWorkout: sessionData)
     }
     
     public func resumeWorkout(){
@@ -150,7 +150,7 @@ public class ShotsWorkoutManager: NSObject, ObservableObject {
         lastStartDate = Date()
         state = .workoutRunning
         WKInterfaceDevice.current().play(.start)
-        delegate!.workoutManager(didResumeWorkout: sessionData!)
+        delegate!.workoutManager(didResumeWorkout: sessionData)
     }
     
     public func stopWorkout(){
@@ -158,7 +158,7 @@ public class ShotsWorkoutManager: NSObject, ObservableObject {
         if state != .workoutFinished{
             Log.trace("Trying to end workout")
             workoutSession?.end()
-            sessionData?.endDate = Date()
+            sessionData.endDate = Date()
             builder?.endCollection(withEnd: Date()) { (success, error) in
                 guard success else {
                     Log.error("Couldn't finish collection: \(error!)")
@@ -172,7 +172,7 @@ public class ShotsWorkoutManager: NSObject, ObservableObject {
             }
                 
             Log.trace("Trying to end workout")
-            if sessionData?.sessionType != ShotsSessionType.MANUAL.rawValue{
+            if sessionData.sessionType != ShotsSessionType.MANUAL.rawValue{
                 motionManager.stopMotionUpdates()
             }
             var timeIncrement = 0
@@ -180,10 +180,10 @@ public class ShotsWorkoutManager: NSObject, ObservableObject {
                 timeIncrement = Int(Date().timeIntervalSince(lastStartDate!))
             }
             lastStartDate = nil
-            sessionData?.elapsedSeconds = sessionData!.elapsedSeconds + timeIncrement
+            sessionData.elapsedSeconds = sessionData.elapsedSeconds + timeIncrement
             state = .workoutFinished
             WKInterfaceDevice.current().play(.stop)
-            delegate?.workoutManager(didStopWorkout: sessionData!)
+            delegate?.workoutManager(didStopWorkout: sessionData)
         } else {
             Log.warning("Can't stop workout if it's not started")
         }
@@ -193,17 +193,17 @@ public class ShotsWorkoutManager: NSObject, ObservableObject {
 //    MARK: Session Data management
     
     public func addArrow(){
-        sessionData?.arrowCounter += 1
-        delegate?.workoutManager(didUpdateSession: sessionData!)
+        sessionData.arrowCounter += 1
+        delegate?.workoutManager(didUpdateSession: sessionData)
     }
     
     public func removeArrow(){
-        if sessionData!.arrowCounter <= Int16(1) {
-            sessionData?.arrowCounter = 0
+        if sessionData.arrowCounter <= Int16(1) {
+            sessionData.arrowCounter = 0
         } else {
-            sessionData?.arrowCounter -= 1
+            sessionData.arrowCounter -= 1
         }
-        delegate?.workoutManager(didUpdateSession: sessionData!)
+        delegate?.workoutManager(didUpdateSession: sessionData)
     }
     
 //    MARK: Other functions
@@ -232,7 +232,7 @@ extension ShotsWorkoutManager: HKLiveWorkoutBuilderDelegate {
             let statistics = workoutBuilder.statistics(for: quantityType)!
             self.updateWorkoutForQuantityType(quantityType, statistics)
             
-            delegate?.workoutManager(didUpdateSession: sessionData!)
+            delegate?.workoutManager(didUpdateSession: sessionData)
         }
     }
     
@@ -241,11 +241,11 @@ extension ShotsWorkoutManager: HKLiveWorkoutBuilderDelegate {
         switch quantityType {
             case HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning):
                 let value = Int(statistics.sumQuantity()!.doubleValue(for: HKUnit.meter()))
-                sessionData?.cumulativeDistance = value
+                sessionData.cumulativeDistance = value
                 return
             case HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned):
                 let value = Int(statistics.sumQuantity()!.doubleValue(for: HKUnit.kilocalorie()))
-                sessionData?.cumulativeCaloriesBurned = value
+                sessionData.cumulativeCaloriesBurned = value
                 return
             case HKQuantityType.quantityType(forIdentifier: .heartRate):
                 let value = Int(statistics.mostRecentQuantity()!.doubleValue(for: HKUnit.count().unitDivided(by: HKUnit.minute())))
@@ -253,14 +253,14 @@ extension ShotsWorkoutManager: HKLiveWorkoutBuilderDelegate {
                 let minValue = Int(statistics.minimumQuantity()!.doubleValue(for: HKUnit.count().unitDivided(by: HKUnit.minute())))
                 let avgValue = Int(statistics.averageQuantity()!.doubleValue(for: HKUnit.count().unitDivided(by: HKUnit.minute())))
                 
-                sessionData?.currentHeartRate = value
-                if maxValue > sessionData!.maxHeartRate {
-                    sessionData!.maxHeartRate = maxValue
+                sessionData.currentHeartRate = value
+                if maxValue > sessionData.maxHeartRate {
+                    sessionData.maxHeartRate = maxValue
                 }
-                if minValue < sessionData!.minHeartRate {
-                    sessionData!.minHeartRate = minValue
+                if minValue < sessionData.minHeartRate {
+                    sessionData.minHeartRate = minValue
                 }
-                sessionData!.averageHeartRate = avgValue
+                sessionData.averageHeartRate = avgValue
                 return
             default:
                 return
