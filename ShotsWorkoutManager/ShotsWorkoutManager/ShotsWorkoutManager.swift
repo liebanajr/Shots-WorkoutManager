@@ -9,6 +9,7 @@
 import WatchKit
 import HealthKit
 import WatchConnectivity
+import Combine
 
 public enum ShotsSessionType : String{
     case FREE = "free"
@@ -25,14 +26,18 @@ public protocol ShotsWorkoutDelegate {
     func workoutManager(didLockScreen withData: ShotsSessionDetails?)
 }
 
-public class ShotsWorkoutManager: NSObject {
+public class ShotsWorkoutManager: NSObject, ObservableObject {
+    
+    public enum WorkoutState {
+        case workoutRunning
+        case workoutPaused
+        case workoutFinished
+    }
     
 //    MARK: Singleton. Only one workout is allowed to run at a time
-    
     public static let shared = ShotsWorkoutManager()
     
 //    MARK: Delegate
-    
     public var delegate: ShotsWorkoutDelegate?
     
 //    MARK: HealthKit objects
@@ -41,19 +46,18 @@ public class ShotsWorkoutManager: NSObject {
     var healthStore : HKHealthStore?
     
 //    MARK: Dependencies
-    public var motionManager: ShotsMotionManager?
-    let wcSession = WCSession.default
+    public var motionManager: ShotsMotionManager = ShotsMotionManager(sampleFrequency: K.sampleFrequency)
+    public let wcSession = WCSession.default
+    @Published
     public var sessionData : ShotsSessionDetails?
     
 //    MARK: State management
-    public var isWorkoutRunning : Bool?
+    @Published
+    public var state: WorkoutState = .workoutRunning
+    @Published
     public var isSaveWorkoutActive = true
+    @Published
     private var lastStartDate : Date?
-    
-    public override init() {
-        motionManager = ShotsMotionManager(sampleFrequency: K.sampleFrequency)
-        super.init()
-    }
     
 //   MARK: Workout lifecycle
     
@@ -63,11 +67,11 @@ public class ShotsWorkoutManager: NSObject {
             case .FREE:
                 Log.trace("Starting free workout session")
                 motionManager = ShotsMotionManager(sampleFrequency: K.sampleFrequency)
-                motionManager?.startMotionUpdates()
+                motionManager.startMotionUpdates()
             case .GOAL:
                 Log.trace("Starting goal workout session")
                 motionManager = ShotsMotionManager(sampleFrequency: K.sampleFrequency)
-                motionManager?.startMotionUpdates()
+                motionManager.startMotionUpdates()
             case .MANUAL:
                 Log.trace("Starting manual workout session")
 
@@ -103,59 +107,55 @@ public class ShotsWorkoutManager: NSObject {
                 fatalError("Error collecting workout data: \(error!)")
             }
         }
-        isWorkoutRunning = true
+        
+        state = .workoutRunning
         WKInterfaceDevice.current().play(.start)
         delegate?.workoutManager(didStartWorkout: sessionData!)
     }
     
     public func pauseWorkout(){
-        if let isRunning = isWorkoutRunning{
-            if !isRunning {
-                Log.warning("Can't pause workout if it's not running")
-                return
-            }
-            
-            if sessionData?.sessionType == ShotsSessionType.MANUAL.rawValue {
-                Log.error("Can't pause on a manual workout")
-                return
-            }
-            workoutSession?.pause()
-            motionManager?.pauseMotionUpdates()
-            var timeIncrement = 0
-            if lastStartDate != nil {
-                timeIncrement = Int(Date().timeIntervalSince(lastStartDate!))
-            }
-            lastStartDate = nil
-            sessionData?.elapsedSeconds = sessionData!.elapsedSeconds + timeIncrement
-            isWorkoutRunning = false
-            WKInterfaceDevice.current().play(.stop)
-            delegate!.workoutManager(didPauseWorkout: sessionData!)
-            
-        } else {
-            Log.warning("Can't pause workout if it's not started")
+        if state != .workoutRunning {
+            Log.warning("Can't pause workout if it's not running")
+            return
         }
+        
+        if sessionData?.sessionType == ShotsSessionType.MANUAL.rawValue {
+            Log.error("Can't pause on a manual workout")
+            return
+        }
+        workoutSession?.pause()
+        motionManager.pauseMotionUpdates()
+        var timeIncrement = 0
+        if lastStartDate != nil {
+            timeIncrement = Int(Date().timeIntervalSince(lastStartDate!))
+        }
+        lastStartDate = nil
+        sessionData?.elapsedSeconds = sessionData!.elapsedSeconds + timeIncrement
+        state = .workoutPaused
+        WKInterfaceDevice.current().play(.stop)
+        delegate!.workoutManager(didPauseWorkout: sessionData!)
     }
     
     public func resumeWorkout(){
-        if let isRunning = isWorkoutRunning{
-            if isRunning {
-                Log.warning("Can't resume workout if it's already running")
-                return
-            }
-            workoutSession?.resume()
-            motionManager?.resumeMotionUpdates()
-            lastStartDate = Date()
-            isWorkoutRunning = true
-            WKInterfaceDevice.current().play(.start)
-            delegate!.workoutManager(didResumeWorkout: sessionData!)
-        } else {
-            Log.warning("Can't resume workout if it's not started")
+        if state == .workoutFinished {
+            Log.warning("Can't resume workout if it's already finished")
+            return
         }
+        if state == .workoutRunning {
+            Log.warning("Can't resume workout if it's already running")
+            return
+        }
+        workoutSession?.resume()
+        motionManager.resumeMotionUpdates()
+        lastStartDate = Date()
+        state = .workoutRunning
+        WKInterfaceDevice.current().play(.start)
+        delegate!.workoutManager(didResumeWorkout: sessionData!)
     }
     
     public func stopWorkout(){
         
-        if isWorkoutRunning != nil{
+        if state != .workoutFinished{
             Log.trace("Trying to end workout")
             workoutSession?.end()
             sessionData?.endDate = Date()
@@ -173,7 +173,7 @@ public class ShotsWorkoutManager: NSObject {
                 
             Log.trace("Trying to end workout")
             if sessionData?.sessionType != ShotsSessionType.MANUAL.rawValue{
-                motionManager?.stopMotionUpdates()
+                motionManager.stopMotionUpdates()
             }
             var timeIncrement = 0
             if lastStartDate != nil {
@@ -181,7 +181,7 @@ public class ShotsWorkoutManager: NSObject {
             }
             lastStartDate = nil
             sessionData?.elapsedSeconds = sessionData!.elapsedSeconds + timeIncrement
-            isWorkoutRunning = nil
+            state = .workoutFinished
             WKInterfaceDevice.current().play(.stop)
             delegate?.workoutManager(didStopWorkout: sessionData!)
         } else {
@@ -310,14 +310,12 @@ extension ShotsWorkoutManager: HKWorkoutSessionDelegate {
     public func workoutSession(_ workoutSession: HKWorkoutSession, didGenerate event: HKWorkoutEvent) {
         if event.type == .pauseOrResumeRequest {
             Log.info("Received pause or resume request")
-            if let runningState = isWorkoutRunning {
-                if runningState {
-                    Log.info("Workout running. Pausing")
-                    pauseWorkout()
-                } else {
-                    Log.info("Workout paused. Resuming")
-                    resumeWorkout()
-                }
+            if state == .workoutRunning {
+                Log.info("Workout running. Pausing")
+                pauseWorkout()
+            } else if state == .workoutPaused {
+                Log.info("Workout paused. Resuming")
+                resumeWorkout()
             }
         }
     }
